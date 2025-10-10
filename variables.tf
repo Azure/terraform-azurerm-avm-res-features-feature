@@ -1,25 +1,23 @@
-variable "location" {
-  type        = string
-  description = "Azure region where the resource should be deployed."
-  nullable    = false
-}
-
 variable "name" {
   type        = string
-  description = "The name of the this resource."
+  description = "The name of the feature to register (e.g., 'EncryptionAtHost', 'AKSAzureKeyVaultSecretsProvider')."
+  nullable    = false
 
   validation {
-    condition     = can(regex("TODO", var.name))
-    error_message = "The name must be TODO." # TODO remove the example below once complete:
-    #condition     = can(regex("^[a-z0-9]{5,50}$", var.name))
-    #error_message = "The name must be between 5 and 50 characters long and can only contain lowercase letters and numbers."
+    condition     = length(var.name) > 0
+    error_message = "The feature name must not be empty."
   }
 }
 
-# This is required for most resource modules
-variable "resource_group_name" {
+variable "provider_name" {
   type        = string
-  description = "The resource group where the resources will be deployed."
+  description = "The namespace of the Resource Provider which should be registered."
+  nullable    = false
+
+  validation {
+    condition     = can(regex("^Microsoft\\.[A-Za-z0-9]+$", var.provider_name))
+    error_message = "The provider name must be in the format 'Microsoft.<provider>' (e.g., 'Microsoft.Compute')."
+  }
 }
 
 # required AVM interfaces
