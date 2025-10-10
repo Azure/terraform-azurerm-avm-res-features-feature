@@ -89,6 +89,7 @@ DESCRIPTION
   nullable    = false
 }
 
+# tflint-ignore: terraform_unused_declarations
 variable "private_endpoints" {
   type = map(object({
     name = optional(string, null)
@@ -100,6 +101,7 @@ variable "private_endpoints" {
       condition                              = optional(string, null)
       condition_version                      = optional(string, null)
       delegated_managed_identity_resource_id = optional(string, null)
+      principal_type                         = optional(string, null)
     })), {})
     lock = optional(object({
       kind = string
@@ -146,6 +148,7 @@ DESCRIPTION
 # or if it is to be managed externally, e.g. using Azure Policy.
 # https://github.com/Azure/terraform-azurerm-avm-res-keyvault-vault/issues/32
 # Alternatively you can use AzAPI, which does not have this issue.
+# tflint-ignore: terraform_unused_declarations
 variable "private_endpoints_manage_dns_zone_group" {
   type        = bool
   default     = true
