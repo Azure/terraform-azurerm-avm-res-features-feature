@@ -63,9 +63,9 @@ resource "azurerm_resource_group" "this" {
 module "test" {
   source = "../../"
 
-  # Register the EnableWorkloadIdentityPreview feature for Microsoft.ContainerService
-  # This is a preview feature for AKS Workload Identity
-  name             = "EnableWorkloadIdentityPreview"
-  provider_name    = "Microsoft.ContainerService"
+  # Register the InGuestPatchVMPreview feature for Microsoft.Compute
+  # This is a preview feature that enables in-guest patching for VMs
+  name             = "InGuestPatchVMPreview"
+  provider_name    = "Microsoft.Compute"
   enable_telemetry = var.enable_telemetry # see variables.tf
 }
