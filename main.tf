@@ -3,40 +3,40 @@ data "azapi_client_config" "current" {}
 
 # Register the feature (on apply) and unregister (on destroy)
 resource "azapi_resource_action" "feature_registration" {
-  type                   = "${var.provider_name}/features@2021-07-01"
-  resource_id            = "/subscriptions/${data.azapi_client_config.current.subscription_id}/providers/Microsoft.Features/providers/${var.provider_name}/features/${var.name}"
   action                 = "register"
   method                 = "POST"
+  resource_id            = "/subscriptions/${data.azapi_client_config.current.subscription_id}/providers/Microsoft.Features/providers/${var.provider_name}/features/${var.name}"
+  type                   = "${var.provider_name}/features@2021-07-01"
   response_export_values = ["*"]
 
   timeouts {
     create = "120m"
-    read   = "5m"
     delete = "30m"
+    read   = "5m"
   }
 }
 
 # Unregister the feature when the resource is destroyed
 resource "azapi_resource_action" "feature_unregistration" {
-  type        = "${var.provider_name}/features@2021-07-01"
-  resource_id = "/subscriptions/${data.azapi_client_config.current.subscription_id}/providers/Microsoft.Features/providers/${var.provider_name}/features/${var.name}"
   action      = "unregister"
   method      = "POST"
+  resource_id = "/subscriptions/${data.azapi_client_config.current.subscription_id}/providers/Microsoft.Features/providers/${var.provider_name}/features/${var.name}"
+  type        = "${var.provider_name}/features@2021-07-01"
   when        = "destroy"
-
-  depends_on = [azapi_resource_action.feature_registration]
 
   timeouts {
     create = "30m"
-    read   = "5m"
     delete = "30m"
+    read   = "5m"
   }
+
+  depends_on = [azapi_resource_action.feature_registration]
 }
 
 # Get the feature registration status to track state
 data "azapi_resource" "feature_status" {
-  type        = "${var.provider_name}/features@2021-07-01"
   resource_id = "/subscriptions/${data.azapi_client_config.current.subscription_id}/providers/Microsoft.Features/providers/${var.provider_name}/features/${var.name}"
+  type        = "${var.provider_name}/features@2021-07-01"
 
   depends_on = [azapi_resource_action.feature_registration]
 }
