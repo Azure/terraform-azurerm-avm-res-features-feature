@@ -52,3 +52,7 @@ locals {
     "git::ssh:://git@github\\.com/[A|a]zure/.+",
   ]
 }
+locals {
+  # tflint-ignore: terraform_unused_declarations
+  avm_azapi_header = join(" ", [for k, v in local.avm_azapi_headers : "${k}=${v}"])
+}
