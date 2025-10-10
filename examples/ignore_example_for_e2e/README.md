@@ -29,7 +29,7 @@ provider "azurerm" {
 # This allows us to randomize the region for the resource group.
 module "regions" {
   source  = "Azure/avm-utl-regions/azurerm"
-  version = "~> 0.1"
+  version = "0.1.0"
 }
 
 # This allows us to randomize the region for the resource group.
@@ -42,7 +42,7 @@ resource "random_integer" "region_index" {
 # This ensures we have unique CAF compliant names for our resources.
 module "naming" {
   source  = "Azure/naming/azurerm"
-  version = "~> 0.3"
+  version = "0.4.1"
 }
 
 # This is required for resource modules
@@ -51,19 +51,16 @@ resource "azurerm_resource_group" "this" {
   name     = module.naming.resource_group.name_unique
 }
 
-# This is the module call
-# Do not specify location here due to the randomization above.
-# Leaving location as `null` will cause the module to use the resource group location
-# with a data source.
+# This is the module call for feature registration
+# Feature registration operates at subscription level, not resource group level
 module "test" {
   source = "../../"
 
-  name             = "TODO"               # TODO update with module.naming.<RESOURCE_TYPE>.name_unique
+  # Register the AKSAzureKeyVaultSecretsProvider feature for Microsoft.ContainerService
+  # This is a common feature that might be used in enterprise environments
+  name             = "AKSAzureKeyVaultSecretsProvider"
+  provider_name    = "Microsoft.ContainerService"
   enable_telemetry = var.enable_telemetry # see variables.tf
-  # source             = "Azure/avm-<res/ptn>-<name>/azurerm"
-  # ...
-  location            = azurerm_resource_group.this.location
-  resource_group_name = azurerm_resource_group.this.name
 }
 ```
 
@@ -116,13 +113,13 @@ The following Modules are called:
 
 Source: Azure/naming/azurerm
 
-Version: ~> 0.3
+Version: 0.4.1
 
 ### <a name="module_regions"></a> [regions](#module\_regions)
 
 Source: Azure/avm-utl-regions/azurerm
 
-Version: ~> 0.1
+Version: 0.1.0
 
 ### <a name="module_test"></a> [test](#module\_test)
 
