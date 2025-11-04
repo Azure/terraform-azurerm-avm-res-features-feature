@@ -19,7 +19,7 @@ terraform {
 provider "azurerm" {
   features {}
 }
-data azurerm_client_config current {}
+
 # This is the module call for feature registration
 # Feature registration operates at subscription level, not resource group level
 module "test" {
@@ -45,9 +45,7 @@ The following requirements are needed by this module:
 
 ## Resources
 
-The following resources are used by this module:
-
-- [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) (data source)
+No resources.
 
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs
