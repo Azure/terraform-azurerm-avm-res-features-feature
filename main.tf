@@ -1,8 +1,44 @@
-# TODO: Replace this dummy resource azurerm_resource_group.TODO with your module resource
-resource "azurerm_resource_group" "TODO" {
-  location = var.location
-  name     = var.name # calling code must supply the name
-  tags     = var.tags
+# Azure Feature Registration using AzAPI
+data "azapi_client_config" "current" {}
+
+# Register the feature (on apply) and unregister (on destroy)
+resource "azapi_resource_action" "feature_registration" {
+  action                 = "register"
+  method                 = "POST"
+  resource_id            = "/subscriptions/${data.azapi_client_config.current.subscription_id}/providers/Microsoft.Features/providers/${var.provider_name}/features/${var.name}"
+  type                   = "${var.provider_name}/features@2021-07-01"
+  response_export_values = ["*"]
+
+  timeouts {
+    create = "120m"
+    delete = "30m"
+    read   = "5m"
+  }
+}
+
+# Unregister the feature when the resource is destroyed
+resource "azapi_resource_action" "feature_unregistration" {
+  action      = "unregister"
+  method      = "POST"
+  resource_id = "/subscriptions/${data.azapi_client_config.current.subscription_id}/providers/Microsoft.Features/providers/${var.provider_name}/features/${var.name}"
+  type        = "${var.provider_name}/features@2021-07-01"
+  when        = "destroy"
+
+  timeouts {
+    create = "30m"
+    delete = "30m"
+    read   = "5m"
+  }
+
+  depends_on = [azapi_resource_action.feature_registration]
+}
+
+# Get the feature registration status to track state
+data "azapi_resource" "feature_status" {
+  resource_id = "/subscriptions/${data.azapi_client_config.current.subscription_id}/providers/Microsoft.Features/providers/${var.provider_name}/features/${var.name}"
+  type        = "${var.provider_name}/features@2021-07-01"
+
+  depends_on = [azapi_resource_action.feature_registration]
 }
 
 # required AVM resources interfaces
@@ -11,7 +47,7 @@ resource "azurerm_management_lock" "this" {
 
   lock_level = var.lock.kind
   name       = coalesce(var.lock.name, "lock-${var.lock.kind}")
-  scope      = azurerm_resource_group.TODO.id # TODO: Replace with your azurerm resource name
+  scope      = data.azapi_resource.feature_status.id
   notes      = var.lock.kind == "CanNotDelete" ? "Cannot delete the resource or its child resources." : "Cannot delete or modify the resource or its child resources."
 }
 
@@ -19,7 +55,7 @@ resource "azurerm_role_assignment" "this" {
   for_each = var.role_assignments
 
   principal_id                           = each.value.principal_id
-  scope                                  = azurerm_resource_group.TODO.id # TODO: Replace this dummy resource azurerm_resource_group.TODO with your module resource
+  scope                                  = data.azapi_resource.feature_status.id
   condition                              = each.value.condition
   condition_version                      = each.value.condition_version
   delegated_managed_identity_resource_id = each.value.delegated_managed_identity_resource_id

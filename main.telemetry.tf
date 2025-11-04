@@ -9,9 +9,8 @@ data "modtm_module_source" "telemetry" {
 }
 
 locals {
-  # If your module does not support a location, then set this local to "unknown"
-  # If the location is sourced from a collection or other value, then you can update this local to set it to the location
-  main_location = var.location
+  # Feature registration does not support a location as it operates at subscription level
+  main_location = "unknown"
 }
 
 resource "random_uuid" "telemetry" {
@@ -53,7 +52,6 @@ locals {
     "git::ssh:://git@github\\.com/[A|a]zure/.+",
   ]
 }
-
 locals {
   # tflint-ignore: terraform_unused_declarations
   avm_azapi_header = join(" ", [for k, v in local.avm_azapi_headers : "${k}=${v}"])
