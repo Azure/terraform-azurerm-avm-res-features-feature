@@ -12,7 +12,7 @@ terraform {
 provider "azurerm" {
   features {}
 }
-
+data azurerm_client_config current {}
 # This is the module call for feature registration
 # Feature registration operates at subscription level, not resource group level
 module "test" {
@@ -23,5 +23,5 @@ module "test" {
   # This is a preview feature that is typically not registered by default
   name             = "InGuestPatchVMPreview"
   provider_name    = "Microsoft.Compute"
-  enable_telemetry = var.enable_telemetry # see variables.tf
+  enable_telemetry = var.enable_telemetry
 }

@@ -31,6 +31,48 @@ DESCRIPTION
   nullable    = false
 }
 
+variable "feature_registration_timeouts" {
+  type = object({
+    create = optional(string, "120m")
+    delete = optional(string, "30m")
+    read   = optional(string, "5m")
+  })
+  default = {
+    create = "120m"
+    delete = "30m"
+    read   = "5m"
+  }
+  description = <<DESCRIPTION
+Timeout configuration for the feature registration operation.
+
+- `create` - (Optional) Timeout for registering the feature. Defaults to 120 minutes.
+- `delete` - (Optional) Timeout for unregistering the feature during destroy. Defaults to 30 minutes.
+- `read` - (Optional) Timeout for reading the feature status. Defaults to 5 minutes.
+DESCRIPTION
+  nullable    = false
+}
+
+variable "feature_unregistration_timeouts" {
+  type = object({
+    create = optional(string, "30m")
+    delete = optional(string, "30m")
+    read   = optional(string, "5m")
+  })
+  default = {
+    create = "30m"
+    delete = "30m"
+    read   = "5m"
+  }
+  description = <<DESCRIPTION
+Timeout configuration for the feature unregistration operation that runs on destroy.
+
+- `create` - (Optional) Timeout for the unregistration operation. Defaults to 30 minutes.
+- `delete` - (Optional) Timeout for cleanup. Defaults to 30 minutes.
+- `read` - (Optional) Timeout for reading the status. Defaults to 5 minutes.
+DESCRIPTION
+  nullable    = false
+}
+
 variable "lock" {
   type = object({
     kind = string
