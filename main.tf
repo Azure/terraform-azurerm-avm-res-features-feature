@@ -83,15 +83,14 @@ resource "azapi_resource" "role_assignments" {
   # }
   update_headers = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
 
-  depends_on = [
-    azapi_resource_action.feature_registration,
-  ]
-
   lifecycle {
     ignore_changes = [
       body.properties.principalType,
     ]
   }
+  depends_on = [
+    azapi_resource_action.feature_registration,
+  ]
 }
 
 # Terraform data resource to track role assignment changes that require updates via azapi_update_resource
