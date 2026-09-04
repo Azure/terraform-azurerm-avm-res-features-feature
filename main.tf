@@ -44,14 +44,10 @@ data "azapi_resource" "feature_status" {
 resource "azapi_resource" "lock" {
   count = var.lock != null ? 1 : 0
 
-  name           = coalesce(module.avm_utl_interfaces.lock_azapi.name, "lock-${var.provider_name}")
-  parent_id      = data.azapi_resource.feature_status.id
-  type           = module.avm_utl_interfaces.lock_azapi.type
-  body           = module.avm_utl_interfaces.lock_azapi.body
-  create_headers = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
-  delete_headers = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
-  read_headers   = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
-  update_headers = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
+  name      = coalesce(module.avm_utl_interfaces.lock_azapi.name, "lock-${var.provider_name}")
+  parent_id = data.azapi_resource.feature_status.id
+  type      = module.avm_utl_interfaces.lock_azapi.type
+  body      = module.avm_utl_interfaces.lock_azapi.body
 
   depends_on = [azapi_resource.role_assignments]
 }
@@ -73,15 +69,6 @@ resource "azapi_resource" "role_assignments" {
       principalType                      = module.avm_utl_interfaces.role_assignments_azapi[each.key].body.properties.principalType
     }
   }
-  create_headers = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
-  delete_headers = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
-  read_headers   = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
-  # retry = {
-  #   error_message_regex = [
-  #     ".*Please remove the lock and try again.*",
-  #   ]
-  # }
-  update_headers = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
 
   lifecycle {
     ignore_changes = [
@@ -116,8 +103,6 @@ resource "azapi_update_resource" "role_assignments" {
       principalType = module.avm_utl_interfaces.role_assignments_azapi[each.key].body.properties.principalType
     }
   }
-  read_headers   = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
-  update_headers = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
 
   # Trigger update when update_tracker is replaced
   lifecycle {
