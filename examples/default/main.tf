@@ -23,5 +23,5 @@ module "test" {
   # This is a preview feature that is typically not registered by default
   name             = "InGuestPatchVMPreview"
   provider_name    = "Microsoft.Compute"
-  enable_telemetry = false
+  enable_telemetry = var.enable_telemetry
 }
