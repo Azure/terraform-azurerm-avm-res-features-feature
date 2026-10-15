@@ -18,6 +18,7 @@ provider "azurerm" {
 module "test" {
   source = "../../"
 
+  location = var.location
   # source             = "Azure/avm-res-features-feature/azurerm"
   # Register the InGuestPatchVMPreview feature for Microsoft.Compute
   # This is a preview feature that is typically not registered by default
