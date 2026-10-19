@@ -9,6 +9,10 @@ terraform {
   required_version = "~> 1.5"
 
   required_providers {
+    azapi = {
+      source  = "Azure/azapi"
+      version = "~> 2.12"
+    }
     azurerm = {
       source  = "hashicorp/azurerm"
       version = "~> 4.21"
@@ -24,6 +28,9 @@ provider "azurerm" {
 # Feature registration operates at subscription level, not resource group level
 module "test" {
   source = "../../"
+  providers = {
+    azapi = azapi
+  }
 
   location = var.location
   # source             = "Azure/avm-res-features-feature/azurerm"
@@ -41,6 +48,8 @@ module "test" {
 The following requirements are needed by this module:
 
 - <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (~> 1.5)
+
+- <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) (~> 2.12)
 
 - <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (~> 4.21)
 
