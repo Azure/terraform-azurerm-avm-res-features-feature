@@ -2,6 +2,7 @@ terraform {
   required_version = "~> 1.5"
 
   required_providers {
+    # tflint-ignore: terraform_unused_required_providers
     azapi = {
       source  = "Azure/azapi"
       version = "~> 2.12"
@@ -21,9 +22,6 @@ provider "azurerm" {
 # Feature registration operates at subscription level, not resource group level
 module "test" {
   source = "../../"
-  providers = {
-    azapi = azapi
-  }
 
   location = var.location
   # source             = "Azure/avm-res-features-feature/azurerm"
